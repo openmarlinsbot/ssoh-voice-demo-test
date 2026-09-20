@@ -19,9 +19,9 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
 .hint{margin:4px 0 0;font-size:14px;line-height:1.6;text-align:center;color:var(--muted)}
 .tlabel{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .tlabel h2{margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.chip{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eef2f9;color:var(--muted)}
-.chip.live{background:#e4f4f4;color:var(--teal)}
-.chip.err{background:#fdeceb;color:#b3261e}
+.voice-demo__chip{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eef2f9;color:var(--muted)}
+.voice-demo__chip.live{background:#e4f4f4;color:var(--teal)}
+.voice-demo__chip.err{background:#fdeceb;color:#b3261e}
 #voice-demo-feed{flex:1;min-height:260px;max-height:440px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff;scroll-behavior:smooth}
 .voice-demo__empty{margin:0;padding:24px 8px;text-align:center;color:#9aa8bf;font-size:14px;line-height:1.6}
 .row{margin:0 0 12px;display:flex;flex-direction:column}
@@ -49,7 +49,7 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
     <p class="hint">Tap the call button, allow your microphone, then just talk.</p>
   </div>
   <div class="right">
-    <div class="tlabel"><h2>Live transcript</h2><span class="chip" id="voice-demo-status">Ready</span></div>
+    <div class="tlabel"><h2>Live transcript</h2><span class="voice-demo__chip" id="voice-demo-status">Ready</span></div>
     <div id="voice-demo-feed"><p class="voice-demo__empty">Nothing yet.<br>Start the call and the words will appear here.</p></div>
     <p class="note">Test version. It doesn't send the demo email or save a lead.</p>
   </div>
@@ -67,7 +67,7 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
 
   function setStatus(text, cls) {
     statusEl.textContent = text;
-    statusEl.className = 'chip' + (cls ? ' ' + cls : '');
+    statusEl.className = 'voice-demo__chip' + (cls ? ' ' + cls : '');
   }
 
   function isAgent(role) {
