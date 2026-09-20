@@ -22,7 +22,7 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
 .chip{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eef2f9;color:var(--muted)}
 .chip.live{background:#e4f4f4;color:var(--teal)}
 .chip.err{background:#fdeceb;color:#b3261e}
-#feed{flex:1;min-height:320px;max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff;scroll-behavior:smooth}
+#feed{flex:1;min-height:260px;max-height:440px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff;scroll-behavior:smooth}
 .empty{margin:0;padding:24px 8px;text-align:center;color:#9aa8bf;font-size:14px;line-height:1.6}
 .row{margin:0 0 12px;display:flex;flex-direction:column}
 .row.you{align-items:flex-end}
@@ -58,7 +58,7 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
 
 <script>
 (function () {
-  var CHUNK_RE = /\/chat-widget\/p-[\w-]+\.js(?:\?|$)/;
+  var CHUNK_RE = /widgets\.leadconnectorhq\.com\/chat-widget\/[^\/?#]+\.js(?:\?|$)/;
   var FALLBACK = ['https://widgets.leadconnectorhq.com/chat-widget/p-D8jnqEma.js',
                   'https://widgets.leadconnectorhq.com/chat-widget/p-C60VmpwS.js'];
   var feed = document.getElementById('feed');
@@ -169,8 +169,8 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
           try { specs[new URL(m[1], f.url).href] = 1; } catch (e) {}
         }
       });
-      var out = Object.keys(specs);
-      return out.length ? out : FALLBACK;
+      FALLBACK.forEach(function (f) { specs[f] = 1; });
+      return Object.keys(specs);
     });
   }
 
