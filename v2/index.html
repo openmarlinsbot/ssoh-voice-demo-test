@@ -23,4 +23,18 @@ p{margin:0 0 20px;font-size:15px;line-height:1.6}
 <script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="6aaf2abe599f010aec33016f"></script>
 </div>
 <p class="note">This is the test version, separate from the booth demo. Nothing here touches the live agents, and it doesn't send the demo email.</p>
-</div></div></div></body></html>
+</div></div></div><script>
+setInterval(function () {
+  var el = document.querySelector('chat-widget');
+  if (!el) return;
+  try { el.showAgencyBranding = false; } catch (e) {}
+  var sr = el.shadowRoot;
+  if (sr && !sr.getElementById('ssoh-tidy')) {
+    var st = document.createElement('style');
+    st.id = 'ssoh-tidy';
+    st.textContent = '.lc_text-widget--agency-branding,.lc_text-widget--embedded-live-chat-footer{display:none!important}';
+    sr.appendChild(st);
+  }
+}, 700);
+</script>
+</body></html>
