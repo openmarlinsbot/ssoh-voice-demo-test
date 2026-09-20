@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Live demo | Swim School Owners Hub</title>
+<style>
+:root{--navy:#000f35;--ink:#1a305c;--muted:#5a6b8c;--teal:#12797a;--line:#e3eaf4}
+*{box-sizing:border-box}
+body{margin:0;background:#eef4fb;font-family:Lato,Helvetica,Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 16px 40px}
+.card{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(0,15,53,.08);overflow:hidden}
+.bar{height:6px;background:linear-gradient(90deg,#245ea3 0%,#00acd7 50%,#27bcbb 100%)}
+.head{padding:24px 24px 18px;text-align:center;border-bottom:1px solid var(--line)}
+.head img{width:96px;height:auto}
+h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
+.sub{margin:0;font-size:14px;color:var(--muted)}
+.cols{display:flex;flex-wrap:wrap}
+.left{flex:1 1 320px;min-width:300px;padding:24px;border-right:1px solid var(--line)}
+.right{flex:1 1 380px;min-width:300px;padding:20px 24px 24px;display:flex;flex-direction:column}
+.widget{min-height:280px;display:flex;align-items:center;justify-content:center}
+.hint{margin:4px 0 0;font-size:14px;line-height:1.6;text-align:center;color:var(--muted)}
+.tlabel{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.tlabel h2{margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chip{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eef2f9;color:var(--muted)}
+.chip.live{background:#e4f4f4;color:var(--teal)}
+.chip.err{background:#fdeceb;color:#b3261e}
+#feed{flex:1;min-height:320px;max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff;scroll-behavior:smooth}
+.empty{margin:0;padding:24px 8px;text-align:center;color:#9aa8bf;font-size:14px;line-height:1.6}
+.row{margin:0 0 12px;display:flex;flex-direction:column}
+.row.you{align-items:flex-end}
+.who{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 4px 3px}
+.bub{max-width:88%;padding:9px 13px;border-radius:13px;font-size:15px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.row.agent .bub{background:#eef2f9;color:var(--ink);border-bottom-left-radius:4px}
+.row.you .bub{background:#e4f4f4;color:#0f5f60;border-bottom-right-radius:4px}
+.note{margin:14px 0 0;font-size:12px;color:#8494ae;line-height:1.5;text-align:center}
+@media(max-width:720px){.left{border-right:none;border-bottom:1px solid var(--line)}}
+</style></head>
+<body>
+<div class="wrap"><div class="card"><div class="bar">
+</div>
+<div class="head">
+  <img alt="Swim School Owners Hub" src="https://assets.cdn.filesafe.space/qDnicuftnLuI6byy60fe/media/c77d7db4-7ae4-406b-8def-c88059be6721.png">
+  <h1>See the conversation as it happens</h1>
+  <p class="sub">Talk to the agent and watch both sides of the call appear in writing.</p>
+</div>
+<div class="cols">
+  <div class="left">
+    <div class="widget">
+      <script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="6aaf2abe599f010aec33016f"></script>
+    </div>
+    <p class="hint">Tap the call button, allow your microphone, then just talk.</p>
+  </div>
+  <div class="right">
+    <div class="tlabel"><h2>Live transcript</h2><span class="chip" id="status">Ready</span></div>
+    <div id="feed"><p class="empty">Nothing yet.<br>Start the call and the words will appear here.</p></div>
+    <p class="note">Test version. It doesn't send the demo email or save a lead.</p>
+  </div>
+</div>
+</div></div>
+
+<script>
+(function () {
+  var CHUNK_RE = /\/chat-widget\/p-[\w-]+\.js(?:\?|$)/;
+  var FALLBACK = ['https://widgets.leadconnectorhq.com/chat-widget/p-D8jnqEma.js',
+                  'https://widgets.leadconnectorhq.com/chat-widget/p-C60VmpwS.js'];
+  var feed = document.getElementById('feed');
+  var statusEl = document.getElementById('status');
+  var lastCount = 0;
+
+  function setStatus(text, cls) {
+    statusEl.textContent = text;
+    statusEl.className = 'chip' + (cls ? ' ' + cls : '');
+  }
+
+  function isAgent(role) {
+    return String(role || '').toLowerCase().charAt(0) === 'a';
+  }
+
+  function render(items) {
+    if (!items || !items.length) return;
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      var text = (it.content || '').trim();
+      if (!text) continue;
+      var agent = isAgent(it.role);
+      html += '<div class="row ' + (agent ? 'agent' : 'you') + '">' +
+              '<span class="who">' + (agent ? 'Voice agent' : 'You') + '</span>' +
+              '<span class="bub"></span></div>';
+    }
+    feed.innerHTML = html;
+    var bubbles = feed.querySelectorAll('.bub'), n = 0;
+    for (var j = 0; j < items.length; j++) {
+      var t = (items[j].content || '').trim();
+      if (!t) continue;
+      bubbles[n++].textContent = t;
+    }
+    feed.scrollTop = feed.scrollHeight;
+    lastCount = items.length;
+  }
+
+  function clearFeed() {
+    feed.innerHTML = '<p class="empty">Listening&hellip;</p>';
+    lastCount = 0;
+  }
+
+  // --- keep the widget tidy: no agency branding -------------------------
+  function tidyWidget() {
+    var el = document.querySelector('chat-widget');
+    if (!el) return false;
+    try { el.showAgencyBranding = false; } catch (e) {}
+    try { el.setAttribute('show-agency-branding', 'false'); } catch (e) {}
+    var sr = el.shadowRoot;
+    if (sr && !sr.getElementById('ssoh-tidy')) {
+      var st = document.createElement('style');
+      st.id = 'ssoh-tidy';
+      st.textContent = '.lc_text-widget--agency-branding,' +
+                       '.lc_text-widget--embedded-live-chat-footer{display:none!important}';
+      sr.appendChild(st);
+    }
+    return true;
+  }
+  setInterval(tidyWidget, 700);
+
+  // --- hook the voice client so we can read the transcript --------------
+  function attach(client) {
+    if (!client || client.__ssohHooked) return;
+    client.__ssohHooked = true;
+    try {
+      client.on('call_started', function () { clearFeed(); setStatus('Live', 'live'); });
+      client.on('call_ended', function () { setStatus('Call ended'); });
+      client.on('update', function (u) {
+        if (u && u.transcript && u.transcript.length) {
+          if (lastCount === 0) setStatus('Live', 'live');
+          render(u.transcript);
+        }
+      });
+    } catch (e) {}
+  }
+
+  function patchClass(C) {
+    if (!C || !C.prototype || !C.prototype.startCall || C.prototype.__ssohPatched) return false;
+    var orig = C.prototype.startCall;
+    C.prototype.startCall = function () {
+      attach(this);
+      return orig.apply(this, arguments);
+    };
+    C.prototype.__ssohPatched = true;
+    return true;
+  }
+
+  function findSpecs() {
+    var urls = [], seen = {};
+    try {
+      var res = performance.getEntriesByType('resource');
+      for (var i = 0; i < res.length; i++) {
+        var n = res[i].name;
+        if (CHUNK_RE.test(n) && !seen[n]) { seen[n] = 1; urls.push(n); }
+      }
+    } catch (e) {}
+    return Promise.all(urls.map(function (u) {
+      return fetch(u).then(function (r) { return r.text(); })
+                     .then(function (t) { return { url: u, text: t }; })
+                     .catch(function () { return null; });
+    })).then(function (files) {
+      var specs = {}, re = /(?:RetellWebClient|LcVoiceWebClient)\s*:\s*\w+\s*\}\s*=\s*await import\("([^"]+)"\)/g;
+      files.forEach(function (f) {
+        if (!f) return;
+        var m;
+        while ((m = re.exec(f.text))) {
+          try { specs[new URL(m[1], f.url).href] = 1; } catch (e) {}
+        }
+      });
+      var out = Object.keys(specs);
+      return out.length ? out : FALLBACK;
+    });
+  }
+
+  var patched = 0;
+  function tryPatch() {
+    return findSpecs().then(function (specs) {
+      return Promise.all(specs.map(function (s) {
+        return import(s).then(function (mod) {
+          ['RetellWebClient', 'LcVoiceWebClient'].forEach(function (k) {
+            if (patchClass(mod[k])) patched++;
+          });
+        }).catch(function () {});
+      }));
+    }).then(function () { return patched; });
+  }
+
+  var attempts = 0;
+  (function loop() {
+    tryPatch().then(function (n) {
+      attempts++;
+      if (n > 0) return;                       // hooked, nothing more to do
+      if (attempts < 20) return setTimeout(loop, 1000);
+      setStatus('Transcript unavailable', 'err');
+    });
+  })();
+
+  // --- self test: ?selftest=1 fills the panel without making a call -----
+  if (/[?&]selftest=1/.test(location.search)) {
+    var script = [
+      { role: 'agent', content: 'Oh, hey, how are you going? Thanks for stopping by the Swim School Owners Hub booth! Can you be really clear for me and tell me the name of your swim school?' },
+      { role: 'user', content: 'Fish and Flips Swim School.' },
+      { role: 'agent', content: 'Oh wow, thanks so much, Fish and Flips Swim School! Now I’m going to send you over to Marlena. Ready?' },
+      { role: 'user', content: 'Yep.' },
+      { role: 'agent', content: 'Hey, I’m Marlena from Fish and Flips Swim School, and I’m your potential virtual receptionist. What can I help you with today?' },
+      { role: 'user', content: 'I’d like to mark my child absent, please.' },
+      { role: 'agent', content: 'No worries! Can you just confirm your phone number that’s linked to your account?' }
+    ];
+    clearFeed(); setStatus('Live', 'live');
+    script.forEach(function (_, i) {
+      setTimeout(function () {
+        render(script.slice(0, i + 1));
+        if (i === script.length - 1) setStatus('Call ended');
+      }, 700 * (i + 1));
+    });
+  }
+})();
+</script>
+</body></html>
