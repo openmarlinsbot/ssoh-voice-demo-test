@@ -22,8 +22,8 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
 .chip{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:#eef2f9;color:var(--muted)}
 .chip.live{background:#e4f4f4;color:var(--teal)}
 .chip.err{background:#fdeceb;color:#b3261e}
-#feed{flex:1;min-height:260px;max-height:440px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff;scroll-behavior:smooth}
-.empty{margin:0;padding:24px 8px;text-align:center;color:#9aa8bf;font-size:14px;line-height:1.6}
+#voice-demo-feed{flex:1;min-height:260px;max-height:440px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff;scroll-behavior:smooth}
+.voice-demo__empty{margin:0;padding:24px 8px;text-align:center;color:#9aa8bf;font-size:14px;line-height:1.6}
 .row{margin:0 0 12px;display:flex;flex-direction:column}
 .row.you{align-items:flex-end}
 .who{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 4px 3px}
@@ -49,8 +49,8 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
     <p class="hint">Tap the call button, allow your microphone, then just talk.</p>
   </div>
   <div class="right">
-    <div class="tlabel"><h2>Live transcript</h2><span class="chip" id="status">Ready</span></div>
-    <div id="feed"><p class="empty">Nothing yet.<br>Start the call and the words will appear here.</p></div>
+    <div class="tlabel"><h2>Live transcript</h2><span class="chip" id="voice-demo-status">Ready</span></div>
+    <div id="voice-demo-feed"><p class="voice-demo__empty">Nothing yet.<br>Start the call and the words will appear here.</p></div>
     <p class="note">Test version. It doesn't send the demo email or save a lead.</p>
   </div>
 </div>
@@ -61,8 +61,8 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
   var CHUNK_RE = /widgets\.leadconnectorhq\.com\/chat-widget\/[^\/?#]+\.js(?:\?|$)/;
   var FALLBACK = ['https://widgets.leadconnectorhq.com/chat-widget/p-D8jnqEma.js',
                   'https://widgets.leadconnectorhq.com/chat-widget/p-C60VmpwS.js'];
-  var feed = document.getElementById('feed');
-  var statusEl = document.getElementById('status');
+  var feed = document.getElementById('voice-demo-feed');
+  var statusEl = document.getElementById('voice-demo-status');
   var lastCount = 0;
 
   function setStatus(text, cls) {
@@ -98,7 +98,7 @@ h1{margin:12px 0 4px;font-size:20px;color:var(--navy)}
   }
 
   function clearFeed() {
-    feed.innerHTML = '<p class="empty">Listening&hellip;</p>';
+    feed.innerHTML = '<p class="voice-demo__empty">Listening&hellip;</p>';
     lastCount = 0;
   }
 
